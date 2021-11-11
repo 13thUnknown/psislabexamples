@@ -4,20 +4,13 @@
  */
 package info.stepanoff.trsis.samples.rest;
 
-import java.security.Principal;
-import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -61,8 +54,6 @@ public class SchoolRestServiceTest {
     @WithMockUser(value = "Test User", username = "admin")
     public void testRestSchoolsAddDelete() throws Exception {
 
-        Principal principal = createMockAdminPrincipal();
-
         webClient.post().uri("/public/rest/schools/10/mockschool").exchange().expectStatus().isOk();
                 
         webClient.get().uri("/public/rest/schools").exchange().expectStatus().isOk()
@@ -88,29 +79,5 @@ public class SchoolRestServiceTest {
     @Test    
     public void testRestSchoolsDeleteUnauthentificated() throws Exception {
         webClient.delete().uri("/public/rest/schools/10").exchange().expectStatus().isUnauthorized();        
-    }
-
-    private Principal createMockAdminPrincipal() {
-        return createMockPrincipal("admin", "ADMIN_USER");
-    }
-
-//    private Principal createMockGuestPrincipal() {
-//        return createMockPrincipal("guest", "GUEST_USER");
-//    }
-    private Principal createMockPrincipal(String user, String authority) {
-        User mockPrincipal = Mockito.mock(User.class);
-
-        Mockito.when(mockPrincipal.getUsername())
-                .thenReturn(user);
-
-        Mockito.when(mockPrincipal.getAuthorities())
-                .thenReturn(Collections.singleton((GrantedAuthority) () -> authority));
-
-        Authentication principal = (Authentication) Mockito.mock(Authentication.class);
-
-        Mockito.when(principal.getPrincipal())
-                .thenReturn(mockPrincipal);
-
-        return principal;
     }
 }
