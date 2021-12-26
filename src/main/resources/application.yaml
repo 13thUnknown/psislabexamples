@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: mp40-common
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/psis-lab1?authSource=admin
+  liquibase:
+    change-log: liquibase/changelog.yaml
+  jackson:
+    mapper:
+      ACCEPT_CASE_INSENSITIVE_ENUMS: true
+springdoc:
+  swagger-ui:
+    path: /swagger
+
+server:
+  port: 8080
